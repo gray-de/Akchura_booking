@@ -2,9 +2,7 @@
 
 {% block title %}Главная страница{% endblock %}
 {% block content%}
-    <ul>
-        {% for cottage in cottages %}
-            <li>{{ cottage.name }}</li>
-        {% endfor %}
-    </ul>
+    {% for cottage in cottages %}
+        {% include 'includes/card.html' %}
+    {% endfor %}
 {% endblock %}

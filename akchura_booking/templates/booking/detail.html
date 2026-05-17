@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная страница{% endblock %}
+{% block content%}
+    <div class="card" style="width: 18rem;">
+    <div class="card-body">
+        <h5 class="card-title">{{ cottage.name }}</h5>
+        <p class="card-text">{{ cottage.description|truncatewords:25 }}</p>
+        <p class="card-text">{{ cottage.capacity }}</p>
+        <p class="card-text">{{ cottage.price }}</p>
+    </div>
+</div>
+<br>
+{% endblock %}

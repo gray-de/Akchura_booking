@@ -1,0 +1,11 @@
+from django.urls import path
+from booking import views
+
+
+app_name = 'booking'
+
+urlpatterns = [
+    path('', views.IndexListView.as_view(), name='homepage'),
+    path('cottages/', views.TestTemplateView.as_view())
+
+]

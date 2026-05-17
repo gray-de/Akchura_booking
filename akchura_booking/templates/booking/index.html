@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная страница{% endblock %}
+{% block content%}
+    <ul>
+        {% for cottage in cottages %}
+            <li>{{ cottage.name }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

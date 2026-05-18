@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from django.views.generic import ListView, TemplateView, DetailView
-from .models import Cottage
+from django.views.generic import ListView, TemplateView, DetailView, CreateView
+from .models import Cottage, Booking
+from .forms import BookingForm
 
 
 class IndexListView(ListView):
@@ -17,3 +18,9 @@ class CottageDetailView(DetailView):
     model = Cottage
     template_name = 'booking/detail.html'
     context_object_name = 'cottage'
+
+
+class BookingCreateView(CreateView):
+    model = Booking
+    template_name = 'booking/booking_create.html'
+    form_class = BookingForm

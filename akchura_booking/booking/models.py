@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from .validators import phone_regex
 
 
 class Cottage(models.Model):
@@ -19,3 +20,42 @@ class Cottage(models.Model):
         verbose_name = 'Домик'
         verbose_name_plural = 'Домики'
         ordering = ['name',]
+
+    def __str__(self):
+        return f'Домик {self.name}'
+
+
+class Booking(models.Model):
+
+    STATUS_CHOICES = [
+        ('pending', 'Ожидание подтверждения'),
+        ('cancelled', 'Отменено'),
+        ('confirmed', 'Подтверждено')
+    ]
+
+    cottage = models.ForeignKey(
+        Cottage, on_delete=models.CASCADE,
+        related_name='bookings',
+        verbose_name='Домик')
+    people_number = models.SmallIntegerField(
+        validators=[MinValueValidator(1)], verbose_name='Кол-во людей')
+    check_in_date = models.DateTimeField(verbose_name='Дата заезда')
+    check_out_date = models.DateTimeField(verbose_name='Дата выезда')
+    telephone_number = models.CharField(
+        validators=[phone_regex],
+        max_length=17,
+        unique=True,
+        verbose_name='Номер телефона'
+    )
+    status = models.CharField(choices=STATUS_CHOICES,
+                              default='pending', verbose_name='Статус брони')
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name='Время создания брони')
+
+    class Meta:
+        verbose_name = 'Бронь'
+        verbose_name_plural = 'Брони'
+
+    def __str__(self):
+        return (f'Бронь для {self.cottage} '
+                f'в количестве {self.people_number} человек')

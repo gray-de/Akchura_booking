@@ -1,7 +1,9 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, DetailView, CreateView
 from .models import Cottage, Booking
 from .forms import BookingForm
+from django import forms
 
 
 class IndexListView(ListView):
@@ -24,3 +26,6 @@ class BookingCreateView(CreateView):
     model = Booking
     template_name = 'booking/booking_create.html'
     form_class = BookingForm
+
+    def get_success_url(self):
+        return reverse_lazy('booking:homepage')

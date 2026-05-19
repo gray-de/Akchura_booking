@@ -1,6 +1,9 @@
+from django.utils import timezone
+
 from django.db import models
 from django.core.validators import MinValueValidator
 from .validators import phone_regex
+from django.core.exceptions import ValidationError
 
 
 class Cottage(models.Model):
@@ -44,7 +47,6 @@ class Booking(models.Model):
     telephone_number = models.CharField(
         validators=[phone_regex],
         max_length=17,
-        unique=True,
         verbose_name='Номер телефона'
     )
     status = models.CharField(choices=STATUS_CHOICES,
@@ -55,6 +57,22 @@ class Booking(models.Model):
     class Meta:
         verbose_name = 'Бронь'
         verbose_name_plural = 'Брони'
+
+    def clean(self):
+        if self.check_in_date and self.check_out_date:
+            if self.check_in_date >= self.check_out_date:
+                raise ValidationError(
+                    'Дата заезда должна быть раньше даты выезда.')
+            if (self.check_out_date - self.check_in_date).days < 1:
+                raise ValidationError('Минимальное бронирование — одна ночь.')
+
+        # 3. Дата заезда не в прошлом (только для новых бронирований)
+        if self.pk is None and self.check_in_date and self.check_in_date < timezone.now():
+            raise ValidationError('Дата заезда не может быть в прошлом.')
+        if self.cottage and self.cottage.capacity is not None and self.people_number is not None:
+            if self.cottage.capacity < self.people_number:
+                raise ValidationError(
+                    f'Коттедж вмещает максимум {self.cottage.capacity} человек, указано {self.people_number}.')
 
     def __str__(self):
         return (f'Бронь для {self.cottage} '

@@ -19,6 +19,32 @@ class Cottage(models.Model):
     is_active = models.BooleanField(default=True,
                                     verbose_name='Доступность для брони')
 
+    def is_available_for_guests(self, check_in_date,
+                                check_out_date, people_number):
+        existing_bookings = self.bookings.exclude(status='cancelled').filter(
+            check_in_date__lt=check_out_date,
+            check_out_date__gt=check_in_date
+        )
+        events = []
+        for book in existing_bookings:
+            events.append((book.check_in_date, book.people_number))
+            events.append((book.check_out_date, -book.people_number))
+
+        events.append((check_in_date, people_number))
+        events.append((check_out_date, -people_number))
+
+        events.sort(key=lambda x: (x[0], -x[1]))
+
+        current = 0
+        max_people = 0
+
+        for _, delta in events:
+            current += delta
+            if current > max_people:
+                max_people = current
+
+        return max_people <= self.capacity
+
     class Meta:
         verbose_name = 'Домик'
         verbose_name_plural = 'Домики'

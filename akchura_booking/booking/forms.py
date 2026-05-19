@@ -37,4 +37,4 @@ class BookingForm(forms.ModelForm):
 
         if cottage.capacity < people_number:
             self.add_error(
-                'people_number', 'Количество людей не может быть больше вместимости домика.')
+                'people_number', f'Количество людей не может быть больше вместимости домика({cottage.capacity}).')

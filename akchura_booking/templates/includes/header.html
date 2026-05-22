@@ -25,9 +25,17 @@
             <li><a class="dropdown-item" href="#">Something else here</a></li>
           </ul>
         </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-        </li>
+        {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href={% url 'users:profile' user.username %}>{{ user.username }}</a>
+            </li>
+            <form class="d-flex" action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button class="btn btn-outline-success" type="submit">Выйти</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}">Войти</a>
+        {% endif %}
       </ul>
       <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>

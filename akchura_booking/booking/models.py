@@ -1,9 +1,11 @@
 from django.utils import timezone
-
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.core.validators import MinValueValidator
 from .validators import phone_regex
 from django.core.exceptions import ValidationError
+
+User = get_user_model()
 
 
 class Cottage(models.Model):
@@ -70,11 +72,9 @@ class Booking(models.Model):
         validators=[MinValueValidator(1)], verbose_name='Кол-во людей')
     check_in_date = models.DateTimeField(verbose_name='Дата заезда')
     check_out_date = models.DateTimeField(verbose_name='Дата выезда')
-    telephone_number = models.CharField(
-        validators=[phone_regex],
-        max_length=17,
-        verbose_name='Номер телефона'
-    )
+    telephone_number = models.OneToOneField(
+        User, on_delete=models.CASCADE, verbose_name='Номер телефона')
+
     status = models.CharField(choices=STATUS_CHOICES,
                               default='pending', verbose_name='Статус брони')
     created_at = models.DateTimeField(

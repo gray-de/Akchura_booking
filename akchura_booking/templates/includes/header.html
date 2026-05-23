@@ -34,7 +34,8 @@
                 <button class="btn btn-outline-success" type="submit">Выйти</button>
             </form>
         {% else %}
-            <a href="{% url 'login' %}">Войти</a>
+            <a class="btn btn-outline-success" href="{% url 'login' %}">Войти</a>
+            <a class="btn btn-outline-success" href="{% url 'registration' %}">Зарегистрироваться</a>
         {% endif %}
       </ul>
       <form class="d-flex" role="search">

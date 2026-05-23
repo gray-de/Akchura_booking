@@ -72,8 +72,8 @@ class Booking(models.Model):
         validators=[MinValueValidator(1)], verbose_name='Кол-во людей')
     check_in_date = models.DateTimeField(verbose_name='Дата заезда')
     check_out_date = models.DateTimeField(verbose_name='Дата выезда')
-    telephone_number = models.OneToOneField(
-        User, on_delete=models.CASCADE, verbose_name='Номер телефона')
+    client = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name='Пользователь')
 
     status = models.CharField(choices=STATUS_CHOICES,
                               default='pending', verbose_name='Статус брони')

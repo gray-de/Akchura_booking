@@ -7,12 +7,14 @@ from django import forms
 from django.db import models, transaction
 from datetime import datetime, time
 from django.utils import timezone
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class IndexListView(ListView):
     model = Cottage
     template_name = 'booking/index.html'
     context_object_name = 'cottages'
+    paginate_by = 5
 
 
 class TestTemplateView(TemplateView):
@@ -25,7 +27,7 @@ class CottageDetailView(DetailView):
     context_object_name = 'cottage'
 
 
-class BookingCreateView(CreateView):
+class BookingCreateView(LoginRequiredMixin, CreateView):
     model = Booking
     template_name = 'booking/booking_create.html'
     form_class = BookingForm
@@ -74,6 +76,7 @@ class BookingCreateView(CreateView):
         form.instance.check_in_date = check_in_date
         form.instance.check_out_date = check_out_date
         form.instance.people_number = people_number
+        form.instance.client = self.request.user
 
         return super().form_valid(form)
 

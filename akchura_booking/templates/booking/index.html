@@ -2,7 +2,8 @@
 
 {% block title %}Главная страница{% endblock %}
 {% block content%}
-    {% for cottage in cottages %}
+    {% for cottage in page_obj %}
         {% include 'includes/card.html' %}
     {% endfor %}
+    {% include 'includes/paginator.html' %}
 {% endblock %}

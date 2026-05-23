@@ -2,5 +2,18 @@
 
 {% block title %}Страница пользователя {{profile.username}}{% endblock %}
 {% block content%}
-    {{profile.username}}
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">Аккаунт {{profile.username}}</li>
+        <li class="list-group-item">Имя: {{profile.first_name}}</li>
+        <li class="list-group-item">Фамилия: {{profile.last_name}}</li>
+        <li class="list-group-item">Эл. почта: {{profile.email}}</li>
+        <li class="list-group-item">Телефон: {{profile.telephone}}</li>
+    </ul>
+
+    {% if profile.username == user.username %}
+        <a class="btn btn-outline-success" href="{% url 'users:edit_profile' %}">Редактировать</a>
+    {% else %}
+        Просмотр
+    {% endif %}
+    
 {% endblock %}

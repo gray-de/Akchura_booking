@@ -1,8 +1,13 @@
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import DetailView
+from django.views.generic import DetailView, UpdateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import get_user_model
+from django import forms
+from .forms import UserUpdateForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+User = get_user_model()
 
 
 class ProfileDetailView(DetailView):
@@ -20,3 +25,15 @@ class ProfileDetailView(DetailView):
 class CustomLoginView(LoginView):
     def get_success_url(self):
         return reverse('booking:homepage')
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    template_name = 'users/edit_profile.html'
+    form_class = UserUpdateForm
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_success_url(self):
+        return reverse('users:profile', args=[self.request.user.username])

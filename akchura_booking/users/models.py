@@ -11,3 +11,6 @@ class MyUser(AbstractUser):
         blank=False,
         verbose_name='Номер телефона'
     )
+
+    def __str__(self):
+        return self.username

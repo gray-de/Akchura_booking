@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, DetailView, CreateView
 from .models import Cottage, Booking
-from .forms import BookingForm
+from .forms import BookingForm, CommentCreationForm
 from django import forms
 from django.db import models, transaction
 from datetime import datetime, time
@@ -25,6 +25,19 @@ class CottageDetailView(DetailView):
     model = Cottage
     template_name = 'booking/detail.html'
     context_object_name = 'cottage'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CommentCreationForm()
+        context['comments'] = self.object.cottage_comments.all()
+        return context
+
+    def form_valid(self, form):
+        comment = form.save(commit=False)
+        comment.client = self.request.user
+        comment.cottage = self.object
+        comment.save()
+        return super().form_valid(form)
 
 
 class BookingCreateView(LoginRequiredMixin, CreateView):

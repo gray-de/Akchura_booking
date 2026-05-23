@@ -1,7 +1,7 @@
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from .validators import phone_regex
 from django.core.exceptions import ValidationError
 
@@ -66,7 +66,7 @@ class Booking(models.Model):
 
     cottage = models.ForeignKey(
         Cottage, on_delete=models.CASCADE,
-        related_name='bookings',
+        related_name='cottage_bookings',
         verbose_name='Домик')
     people_number = models.SmallIntegerField(
         validators=[MinValueValidator(1)], verbose_name='Кол-во людей')
@@ -103,3 +103,23 @@ class Booking(models.Model):
     def __str__(self):
         return (f'Бронь для {self.cottage} '
                 f'в количестве {self.people_number} человек')
+
+
+class Comment(models.Model):
+    text = models.TextField(verbose_name='Текст')
+    cottage = models.ForeignKey(Cottage,
+                                on_delete=models.CASCADE,
+                                related_name='cottage_comments',
+                                verbose_name='Домик')
+    client = models.ForeignKey(User,
+                               on_delete=models.CASCADE,
+                               related_name='user_comments',
+                               verbose_name='Пользователь')
+    rating = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        verbose_name='Оценка домика'
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name='Время создания отзыва')
+    updated_at = models.DateTimeField(
+        auto_now=True, verbose_name='Время редактирования отзыва')

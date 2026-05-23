@@ -1,14 +1,38 @@
 {% extends 'base.html' %}
 
-{% block title %}Главная страница{% endblock %}
+{% load django_bootstrap5 %}
+{% bootstrap_css %}
+
+{% block title %}Просмотр {{ cottage.name }}{% endblock %}
 {% block content%}
-    <div class="card" style="width: 18rem;">
+<div class="card" style="width: 18rem;">
     <div class="card-body">
         <h5 class="card-title">{{ cottage.name }}</h5>
-        <p class="card-text">{{ cottage.description|truncatewords:25 }}</p>
+        <p class="card-text">{{ cottage.description }}</p>
         <p class="card-text">{{ cottage.capacity }}</p>
         <p class="card-text">{{ cottage.price }}</p>
     </div>
 </div>
 <br>
+<form method="POST" >
+    {% csrf_token %}
+
+    {% bootstrap_form form %}
+
+    {% bootstrap_button button_type="submit" content="Отправить" %}
+</form>
+<br>
+{% if comments %}
+    {% for comment in comments%}
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">{{ comment.client }}</h5>
+            <p class="card-text">{{ comment.text }}</p>
+        </div>
+    </div>
+    <br>
+    {% endfor %}
+{% else %}
+Вы можете первым оставить отзыв
+{% endif %}
 {% endblock %}

@@ -1,4 +1,4 @@
-from .models import Booking
+from .models import Booking, Comment
 from django import forms
 from django.utils import timezone
 
@@ -37,3 +37,9 @@ class BookingForm(forms.ModelForm):
         if cottage.capacity < people_number:
             self.add_error(
                 'people_number', f'Количество людей не может быть больше вместимости домика({cottage.capacity}).')
+
+
+class CommentCreationForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ("text",)

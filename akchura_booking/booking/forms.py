@@ -39,7 +39,15 @@ class BookingForm(forms.ModelForm):
                 'people_number', f'Количество людей не может быть больше вместимости домика({cottage.capacity}).')
 
 
-class CommentCreationForm(forms.ModelForm):
+class CommentMixin:
     class Meta:
         model = Comment
-        fields = ("text",)
+        fields = ("text", "rating",)
+
+
+class CommentCreationForm(forms.ModelForm, CommentMixin):
+    pass
+
+
+class CommentEditForm(forms.ModelForm, CommentMixin):
+    pass

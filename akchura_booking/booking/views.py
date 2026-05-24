@@ -1,8 +1,9 @@
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse_lazy
-from django.views.generic import ListView, TemplateView, DetailView, CreateView
-from .models import Cottage, Booking
-from .forms import BookingForm, CommentCreationForm
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
+from django.views.generic import (ListView, TemplateView, DetailView,
+                                  CreateView, UpdateView, DeleteView)
+from .models import Cottage, Booking, Comment
+from .forms import BookingForm, CommentCreationForm, CommentEditForm
 from django import forms
 from django.db import models, transaction
 from datetime import datetime, time
@@ -31,13 +32,6 @@ class CottageDetailView(DetailView):
         context['form'] = CommentCreationForm()
         context['comments'] = self.object.cottage_comments.all()
         return context
-
-    def form_valid(self, form):
-        comment = form.save(commit=False)
-        comment.client = self.request.user
-        comment.cottage = self.object
-        comment.save()
-        return super().form_valid(form)
 
 
 class BookingCreateView(LoginRequiredMixin, CreateView):
@@ -95,3 +89,35 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('booking:homepage')
+
+
+def create_comment(request, pk):
+    cottage = get_object_or_404(Cottage, pk=pk)
+    form = CommentCreationForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.client = request.user
+        comment.cottage = cottage
+        comment.save()
+    return redirect('booking:cottage', pk=cottage.pk)
+
+
+class CommentMixin:
+    model = Comment
+    template_name = 'booking/comment_edit.html'
+
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk')
+        comment_id = self.kwargs.get('comment_id')
+        return get_object_or_404(self.get_queryset(), cottage=pk, pk=comment_id)
+
+    def get_success_url(self):
+        return reverse('booking:cottage', kwargs={'pk': self.kwargs.get('pk')})
+
+
+class CommentUpdateView(CommentMixin, UpdateView):
+    form_class = CommentEditForm
+
+
+class CommentDeleteView(CommentMixin, DeleteView):
+    pass

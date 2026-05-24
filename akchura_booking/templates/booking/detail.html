@@ -14,7 +14,7 @@
     </div>
 </div>
 <br>
-<form method="POST" >
+<form method="POST" action={% url 'booking:create_comment' cottage.id %}>
     {% csrf_token %}
 
     {% bootstrap_form form %}
@@ -27,7 +27,12 @@
     <div class="card" style="width: 18rem;">
         <div class="card-body">
             <h5 class="card-title">{{ comment.client }}</h5>
+            <p class="card-text">Оценка: {{ comment.rating }}</p>
             <p class="card-text">{{ comment.text }}</p>
+            {% if comment.client == user %}
+                <a href={% url 'booking:edit_comment' comment.cottage.pk comment.pk %}>Редактировать</a>
+                <a href={% url 'booking:delete_comment' comment.cottage.pk comment.pk %}>Удалить</a>
+            {% endif %}
         </div>
     </div>
     <br>

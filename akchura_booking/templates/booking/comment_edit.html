@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% load django_bootstrap5 %}
+{% bootstrap_css %}
+
+
+{% block title %}Редактирование комментария{% endblock %}
+{% block content%}
+    <form method="POST">
+        {% csrf_token %}
+        {% if '/edit/' in request.path %}
+            {% bootstrap_form form %}
+        {% else %}
+            {{ object.text }}
+            {{ object.rating }}
+        {% endif %}
+    
+        {% bootstrap_button button_type="submit" content="Отправить" %}
+    </form>
+{% endblock %}

@@ -8,7 +8,8 @@ from django import forms
 from django.db import models, transaction
 from datetime import datetime, time
 from django.utils import timezone
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
 
 
 class IndexListView(ListView):
@@ -30,7 +31,8 @@ class CottageDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = CommentCreationForm()
-        context['comments'] = self.object.cottage_comments.all()
+        context['comments'] = self.object.cottage_comments.select_related(
+            'cottage').all()
         return context
 
 
@@ -91,6 +93,7 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
         return reverse_lazy('booking:homepage')
 
 
+@login_required
 def create_comment(request, pk):
     cottage = get_object_or_404(Cottage, pk=pk)
     form = CommentCreationForm(request.POST)
@@ -114,10 +117,14 @@ class CommentMixin:
     def get_success_url(self):
         return reverse('booking:cottage', kwargs={'pk': self.kwargs.get('pk')})
 
+    def test_func(self):
+        current_comment = self.get_object()
+        return self.request.user.is_authenticated and current_comment.client == self.request.user
 
-class CommentUpdateView(CommentMixin, UpdateView):
+
+class CommentUpdateView(LoginRequiredMixin, CommentMixin, UserPassesTestMixin, UpdateView):
     form_class = CommentEditForm
 
 
-class CommentDeleteView(CommentMixin, DeleteView):
+class CommentDeleteView(LoginRequiredMixin, CommentMixin, UserPassesTestMixin, DeleteView):
     pass

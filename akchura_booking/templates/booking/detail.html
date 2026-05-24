@@ -5,22 +5,26 @@
 
 {% block title %}Просмотр {{ cottage.name }}{% endblock %}
 {% block content%}
-<div class="card" style="width: 18rem;">
+<div class="card">
     <div class="card-body">
         <h5 class="card-title">{{ cottage.name }}</h5>
         <p class="card-text">{{ cottage.description }}</p>
-        <p class="card-text">{{ cottage.capacity }}</p>
-        <p class="card-text">{{ cottage.price }}</p>
+        <p class="card-text">В этои домике поместятся: {{ cottage.capacity }} чел.</p>
+        <p class="card-text">Цена: {{ cottage.price }} руб./сут.</p>
     </div>
 </div>
 <br>
-<form method="POST" action={% url 'booking:create_comment' cottage.id %}>
-    {% csrf_token %}
+{% if user.is_authenticated %}
+    <form method="POST" action={% url 'booking:create_comment' cottage.id %}>
+        {% csrf_token %}
 
-    {% bootstrap_form form %}
+        {% bootstrap_form form %}
 
-    {% bootstrap_button button_type="submit" content="Отправить" %}
-</form>
+        {% bootstrap_button button_type="submit" content="Отправить" %}
+    </form>
+{% else %}
+Чтобы написать комменатрий зайдите в аккаунт
+{% endif %}
 <br>
 {% if comments %}
     {% for comment in comments%}

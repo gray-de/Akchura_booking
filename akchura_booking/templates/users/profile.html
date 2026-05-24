@@ -12,8 +12,43 @@
 
     {% if profile.username == user.username %}
         <a class="btn btn-outline-success" href="{% url 'users:edit_profile' %}">Редактировать</a>
+    {% endif %}
+    <h3 class="title">Брони</h3>
+    {% if bookings %}
+        {% for booking in bookings %}
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ booking.cottage.name }}</h5>
+                    <p class="card-text">Количество человек: {{ booking.people_number }}</p>
+                    <p class="card-text">Дата заезда: {{ booking.check_in_date.date }}</p>
+                    <p class="card-text">Дата выезда: {{ booking.check_out_date.date }}</p>
+                    <p class="card-text">Статус: {{ booking.status }}</p>
+                </div>
+            </div>
+        {% endfor %}
     {% else %}
-        Просмотр
+    У вас ещё нет броней
+    {% endif %}
+
+    <h3 class="title">Коментарии</h3>
+    {% if comments %}
+        {% for comment in comments%}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ comment.client }}</h5>
+                <p class="card-text">{{ comment.cottage.name }}</p>
+                <p class="card-text">Оценка: {{ comment.rating }}</p>
+                <p class="card-text">{{ comment.text }}</p>
+                {% if comment.client == user %}
+                    <a href={% url 'booking:edit_comment' comment.cottage.pk comment.pk %}>Редактировать</a>
+                    <a href={% url 'booking:delete_comment' comment.cottage.pk comment.pk %}>Удалить</a>
+                {% endif %}
+            </div>
+        </div>
+        <br>
+        {% endfor %}
+    {% else %}
+    У данного пользователя нет отзывов
     {% endif %}
     
 {% endblock %}

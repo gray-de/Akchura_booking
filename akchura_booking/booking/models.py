@@ -13,9 +13,7 @@ class Cottage(models.Model):
     description = models.TextField(verbose_name='Описание')
     capacity = models.PositiveSmallIntegerField(verbose_name='Вместимость',
                                                 validators=[MinValueValidator(1)])
-    price = models.DecimalField(verbose_name='Цена',
-                                max_digits=8,
-                                decimal_places=2)
+    price = models.PositiveIntegerField(verbose_name='Цена')
     photo = models.ImageField(upload_to='cottages/',
                               verbose_name='Фото', blank=True)
     is_active = models.BooleanField(default=True,
@@ -23,7 +21,7 @@ class Cottage(models.Model):
 
     def is_available_for_guests(self, check_in_date,
                                 check_out_date, people_number):
-        existing_bookings = self.bookings.exclude(status='cancelled').filter(
+        existing_bookings = self.cottage_bookings.exclude(status='cancelled').filter(
             check_in_date__lt=check_out_date,
             check_out_date__gt=check_in_date
         )
@@ -53,7 +51,7 @@ class Cottage(models.Model):
         ordering = ['name',]
 
     def __str__(self):
-        return f'Домик {self.name}'
+        return self.name
 
 
 class Booking(models.Model):
@@ -73,7 +71,7 @@ class Booking(models.Model):
     check_in_date = models.DateTimeField(verbose_name='Дата заезда')
     check_out_date = models.DateTimeField(verbose_name='Дата выезда')
     client = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name='Пользователь')
+        User, on_delete=models.CASCADE, related_name='user_bookings', verbose_name='Пользователь')
 
     status = models.CharField(choices=STATUS_CHOICES,
                               default='pending', verbose_name='Статус брони')

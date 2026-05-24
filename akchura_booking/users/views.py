@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django import forms
 from .forms import UserUpdateForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from booking.models import Comment
 
 User = get_user_model()
 
@@ -19,6 +20,10 @@ class ProfileDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['profile'] = self.object
+        context['comments'] = self.object.user_comments.all()
+        if self.object == self.request.user:
+            context['bookings'] = self.object.user_bookings.all()
+
         return context
 
 

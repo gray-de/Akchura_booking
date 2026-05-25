@@ -11,6 +11,10 @@
         <p class="card-text">{{ cottage.description }}</p>
         <p class="card-text">В этои домике поместятся: {{ cottage.capacity }} чел.</p>
         <p class="card-text">Цена: {{ cottage.price }} руб./сут.</p>
+        {% if cottage.image %}
+            <img class="border-3 rounded img-fluid img-thumbnail mb-2 mx-auto d-block" src="{{ cottage.image.url }}">
+        {% endif %}
+
     </div>
 </div>
 <br>

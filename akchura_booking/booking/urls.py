@@ -17,5 +17,7 @@ urlpatterns = [
          views.CottageDetailView.as_view(),
          name='cottage'),
     path('booking/create/', views.BookingCreateView.as_view(),
-         name='booking_create')
+         name='booking_create'),
+    path('booking/<int:pk>/delete/', views.BookingDeleteView.as_view(),
+         name='booking_delete')
 ]

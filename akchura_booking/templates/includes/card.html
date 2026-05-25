@@ -2,6 +2,11 @@
 {% bootstrap_css %}
 <div class="card" style="width: 18rem;">
     <div class="card-body">
+        {% if cottage.image %}
+            <a href={% url 'booking:cottage' cottage.pk %} target="_blank">
+                <img class="border-3 rounded img-fluid img-thumbnail mb-2 mx-auto d-block" src="{{ cottage.image.url }}">
+            </a>
+      {% endif %}
         <h5 class="card-title">{{ cottage.name }}</h5>
         <p class="card-text">{{ cottage.description|truncatewords:25 }}</p>
         <p class="card-text">В этои домике поместятся: {{ cottage.capacity }} чел.</p>

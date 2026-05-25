@@ -12,7 +12,7 @@
 
     {% if profile.username == user.username %}
         <a class="btn btn-outline-success" href="{% url 'users:edit_profile' %}">Редактировать</a>
-    {% endif %}
+    
     <h3 class="title">Брони</h3>
     {% if bookings %}
         {% for booking in bookings %}
@@ -23,13 +23,14 @@
                     <p class="card-text">Дата заезда: {{ booking.check_in_date.date }}</p>
                     <p class="card-text">Дата выезда: {{ booking.check_out_date.date }}</p>
                     <p class="card-text">Статус: {{ booking.status }}</p>
+                    <a class="card-text" href={% url 'booking:booking_delete' booking.pk %}>Удалить</a>
                 </div>
             </div>
         {% endfor %}
     {% else %}
     У вас ещё нет броней
     {% endif %}
-
+    {% endif %}
     <h3 class="title">Коментарии</h3>
     {% if comments %}
         {% for comment in comments%}

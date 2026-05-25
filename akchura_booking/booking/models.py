@@ -14,10 +14,10 @@ class Cottage(models.Model):
     capacity = models.PositiveSmallIntegerField(verbose_name='Вместимость',
                                                 validators=[MinValueValidator(1)])
     price = models.PositiveIntegerField(verbose_name='Цена')
-    photo = models.ImageField(upload_to='cottages/',
-                              verbose_name='Фото', blank=True)
     is_active = models.BooleanField(default=True,
                                     verbose_name='Доступность для брони')
+    image = models.ImageField(
+        upload_to='cottage_photos', verbose_name='Фото', blank=True, null=True)
 
     def is_available_for_guests(self, check_in_date,
                                 check_out_date, people_number):

@@ -4,13 +4,28 @@
 {% bootstrap_css %}
 
 
-{% block title %}Создать бронь{% endblock %}
+{% block title %}
+    {% if '/create/' in request.path %}
+        Создать бронь
+    {% else %}
+        Удалить бронь
+    {% endif %}
+
+{% endblock %}
 {% block content%}
     <form method="POST">
         {% csrf_token %}
+        {% if '/create/' in request.path %}
+            {% bootstrap_form form %}
+            {% bootstrap_button button_type="submit" content="Отправить" %}
+        {% else %}
+            {{ object.cottage }}
+            {{ object.people_number }}
+            {{ object.check_in_date.date }}
+            {{ object.check_out_date.date }}
+            {% bootstrap_button button_type="submit" content="Удалить" %}
+        {% endif %}
     
-        {% bootstrap_form form %}
-    
-        {% bootstrap_button button_type="submit" content="Отправить" %}
+        
     </form>
 {% endblock %}

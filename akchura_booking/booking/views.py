@@ -93,6 +93,17 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
         return reverse_lazy('booking:homepage')
 
 
+class BookingDeleteView(DeleteView):
+    model = Booking
+    template_name = 'booking/booking_create.html'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Booking, pk=self.kwargs.get('pk'))
+
+    def get_success_url(self):
+        return reverse('users:profile', kwargs={'username': self.request.user.username})
+
+
 @login_required
 def create_comment(request, pk):
     cottage = get_object_or_404(Cottage, pk=pk)

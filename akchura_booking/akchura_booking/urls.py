@@ -19,6 +19,8 @@ from django.urls import path, include, reverse_lazy
 from users.views import CustomLoginView
 from users.forms import CustomUserCreationForm
 from django.views.generic.edit import CreateView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,3 +39,7 @@ urlpatterns = [
     )
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

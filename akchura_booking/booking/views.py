@@ -10,6 +10,8 @@ from datetime import datetime, time
 from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
+from django.db.models import Avg, FloatField, Value
+from django.db.models.functions import Coalesce
 
 
 class IndexListView(ListView):
@@ -17,6 +19,12 @@ class IndexListView(ListView):
     template_name = 'booking/index.html'
     context_object_name = 'cottages'
     paginate_by = 5
+
+    def get_queryset(self):
+        return super().get_queryset().annotate(
+            avg_rating=Coalesce(Avg('cottage_comments__rating'), Value(
+                0.0, output_field=FloatField()))
+        )
 
 
 class TestTemplateView(TemplateView):

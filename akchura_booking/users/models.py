@@ -12,5 +12,9 @@ class MyUser(AbstractUser):
         verbose_name='Номер телефона'
     )
 
+    image = models.ImageField(
+        upload_to='profile_pictures', verbose_name='Картинка профиля',
+        blank=True, null=True)
+
     def __str__(self):
         return self.username

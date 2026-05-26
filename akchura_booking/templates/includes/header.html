@@ -27,6 +27,13 @@
         </li>
         {% if user.is_authenticated %}
             <li class="nav-item">
+              {% if user.image %}
+                <a class="nav-link" href={% url 'users:profile' user.username %}>
+                  <img src="{{ user.image.url }}" width="32" height="32" class="rounded-circle">
+                </a>
+              {% endif %}
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href={% url 'users:profile' user.username %}>{{ user.username }}</a>
             </li>
             <form class="d-flex" action="{% url 'logout' %}" method="post">

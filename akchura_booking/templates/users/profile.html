@@ -3,6 +3,9 @@
 {% block title %}Страница пользователя {{profile.username}}{% endblock %}
 {% block content%}
     <ul class="list-group list-group-flush">
+        {% if user.image %}
+            <img src="{{ user.image.url }}" width="128" height="128">
+        {% endif %}
         <li class="list-group-item">Аккаунт {{profile.username}}</li>
         <li class="list-group-item">Имя: {{profile.first_name}}</li>
         <li class="list-group-item">Фамилия: {{profile.last_name}}</li>
@@ -14,9 +17,10 @@
         <a class="btn btn-outline-success" href="{% url 'users:edit_profile' %}">Редактировать</a>
     
     <h3 class="title">Брони</h3>
-    {% if bookings %}
-        {% for booking in bookings %}
+    {% if profile.user_bookings %}
+        {% for booking in profile.user_bookings.all %}
             <div class="card" style="width: 18rem;">
+
                 <div class="card-body">
                     <h5 class="card-title">{{ booking.cottage.name }}</h5>
                     <p class="card-text">Количество человек: {{ booking.people_number }}</p>
@@ -32,8 +36,8 @@
     {% endif %}
     {% endif %}
     <h3 class="title">Коментарии</h3>
-    {% if comments %}
-        {% for comment in comments%}
+    {% if profile.user_comments %}
+        {% for comment in profile.user_comments.all %}
         <div class="card" style="width: 18rem;">
             <div class="card-body">
                 <h5 class="card-title">{{ comment.client }}</h5>

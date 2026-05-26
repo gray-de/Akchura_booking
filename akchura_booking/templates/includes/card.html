@@ -11,6 +11,7 @@
         <p class="card-text">{{ cottage.description|truncatewords:25 }}</p>
         <p class="card-text">В этои домике поместятся: {{ cottage.capacity }} чел.</p>
         <p class="card-text">Цена: {{ cottage.price }} руб./сут.</p>
+        <p class="card-text">Средняя оценка пользователей: {{ cottage.avg_rating }}</p>
         <a class="card-link" href='{% url 'booking:cottage' cottage.id %}'>Подробнее...</a>
     </div>
 </div>
